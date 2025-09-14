@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esiyla Özel Mesaj ve Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body { margin:0; padding:0; font-family:'Roboto', sans-serif; background:#111; color:#fff; overflow-x:hidden; scroll-behavior:smooth;}
+section { min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:50px 20px; opacity:0; transform:translateY(100px); transition:all 1s ease;}
+section.visible { opacity:1; transform:translateY(0);}
+h1 { font-family:'Playfair Display', serif; font-size:2.5em; margin-bottom:20px; line-height:1.2;}
+@media (max-width:600px){ h1{ font-size:1.8em; } }
+.message-box{ background: rgba(255,255,255,0.05); padding:25px; border-radius:20px; margin-bottom:40px; max-width:90%; line-height:1.8em; }
+.btn { padding:15px 35px; font-size:1.2em; border:none; border-radius:25px; margin:10px; cursor:pointer; font-weight:700; transition:0.3s; }
+.btn:hover{ transform:scale(1.05);}
+.btn.yes { background: linear-gradient(45deg,#ff6f61,#ff3b3b); color:#fff; }
+.btn.no { background:#555; color:#fff; }
+.quiz-btn { background:#333; color:#fff; margin:8px; padding:12px 25px; border-radius:20px; cursor:pointer; }
+.quiz-btn:hover { background:#777; }
+.emoji { position: fixed; pointer-events:none; animation: floatUp 2s forwards; font-size:2.5em;}
+@keyframes floatUp {0%{opacity:1; transform:translateY(0) scale(1);}100%{opacity:0; transform:translateY(-250px) scale(1.5);}}
+.shake { animation: shake 0.5s; }
+@keyframes shake {0%,100%{transform:translateX(0);}25%{transform:translateX(-10px);}50%{transform:translateX(10px);}75%{transform:translateX(-10px);}}
+#loveMsg { display:none; max-width:90%; padding:25px; background: rgba(255,255,255,0.05); border-radius:20px; line-height:1.8em; margin-top:20px;}
+.audioControl { position:fixed; top:10px; right:10px; background:#333; color:#fff; border:none; padding:10px 15px; border-radius:10px; cursor:pointer; z-index:10; }
+.startOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:#111; color:#fff; display:flex; justify-content:center; align-items:center; font-size:1.5em; cursor:pointer; z-index:999; }
+</style>
+</head>
+<body>
+
+<!-- Sayfa açılışında tıklama ile müziği başlat -->
+<div class="startOverlay" id="startOverlay">Başlamak için tıkla 🎵</div>
+
+<!-- Arka Plan Müziği -->
+<audio id="bgMusic" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+</audio>
+<button class="audioControl" onclick="toggleMusic()">🎵 Müzik</button>
+
+<!-- Bölüm 1 -->
+<section id="sec1">
+<h1>Esiyla, seni düşündüğüm her an...</h1>
+<div class="message-box">
+Seninle konuşamadığımız zamanlarda aklım hep sende kaldı. Her mesajımı bekledim ama bazen cevap gelmedi. O boşluğu hissetmem kaçınılmazdı.  
+Her an seni düşünmekle geçen günlerimde, yeniden konuşmaya başladığımızda hislerim daha da güçlendi.  
+</div>
+<button class="btn yes" onclick="nextSection('sec2')">Devam</button>
+</section>
+
+<!-- Bölüm 2 -->
+<section id="sec2">
+<h1>Konuşamadığımız Günler</h1>
+<div class="message-box">
+O sabah kahvemi içerken aklıma sen geldin. Öğle saatlerinde yürüyüşe çıktım ve seni hayal ettim. Akşam olduğunda telefonuma bakarken, belki bir mesaj gelmiştir diye umut ettim ama gelmedi. Kalbim biraz buruk olsa da seni düşündüğüm her an, yüzümde bir gülümseme vardı.  
+</div>
+<button class="btn yes" onclick="nextSection('quiz2')">Bir soru sor</button>
+</section>
+
+<!-- Quiz 1 -->
+<section id="quiz2">
+<h1>Sence sende en çok neyi seviyorum?</h1>
+<div class="message-box">
+<button class="quiz-btn" onclick="checkQuizAnswer(true)">İçtenliğini ❤️</button>
+<button class="quiz-btn" onclick="checkQuizAnswer(false)">Gülüşünü 😁</button>
+<button class="quiz-btn" onclick="checkQuizAnswer(false)">Saçlarını 💇‍♀️</button>
+<button class="quiz-btn" onclick="checkQuizAnswer(false)">Ayaklarını 👣</button>
+<button class="quiz-btn" onclick="checkQuizAnswer(false)">Moda tarzını 👗</button>
+<button class="quiz-btn" onclick="checkQuizAnswer(false)">Evcil hayvanlarını 🐶</button>
+</div>
+</section>
+
+<!-- Bölüm 3 -->
+<section id="sec3">
+<h1>Esiyla, benimle çıkarmısın? 💌</h1>
+<div class="message-box">
+<button class="quiz-btn" onclick="checkAnswer(true)">Evet ❤️</button>
+<button class="quiz-btn" onclick="checkAnswer(false)">Hayır 😅</button>
+</div>
+</section>
+
+<!-- Bölüm 4: Son uzun mesaj -->
+<section id="sec4">
+<h1 id="finalMsg">Harika!</h1>
+<div id="loveMsg">
+Sevgili Esiyla, seninle birlikte her anı yaşamak benim için tarifsiz bir mutluluk.  
+Seni tanımak, hayatımda ışık gibi parlayan en özel anlardan biri.  
+Ayrı kaldığımız zamanlar, senin eksikliğini derinden hissettiriyordu.  
+Ama yeniden konuşmaya başladığımızda, kalbim yeniden umutla doldu.  
+Gelecekte birlikte gülüp, eğleneceğimiz, birbirimizi destekleyeceğimiz güzel günler hayal ediyorum.  
+Seninle her anı değerli kılmak, seni mutlu etmek ve yanında olmak istiyorum. 💕  
+Umarım bu mesaj kalbini ısıtır ve sana olan hislerimi anlatır.
+</div>
+</section>
+
+<script>
+// Başlangıç overlay ve müzik
+const overlay=document.getElementById('startOverlay');
+overlay.addEventListener('click',()=>{
+  overlay.style.display='none';
+  const music=document.getElementById('bgMusic');
+  music.volume=0.5;
+  music.play().catch(()=>{console.log("Tarayıcı izin vermedi, kullanıcı etkileşimi gerekli.");});
+});
+
+// Scroll ile bölümleri görünür yap
+const sections=document.querySelectorAll('section');
+window.addEventListener('scroll',()=>{
+  const scrollY=window.scrollY + window.innerHeight/1.2;
+  sections.forEach(sec=>{
+    if(sec.offsetTop<scrollY){ sec.classList.add('visible'); }
+  });
+});
+
+// Müzik kontrol
+function toggleMusic(){
+  const music=document.getElementById('bgMusic');
+  if(music.paused){ music.play(); } else { music.pause(); }
+}
+
+// Geçiş
+function nextSection(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+// Quiz sonrası kontrol
+function checkQuizAnswer(correct){
+  if(correct){
+    // Doğru → sec3'e geç
+    nextSection('sec3');
+  }else{
+    const sec=document.getElementById('quiz2');
+    sec.classList.add('shake');
+    setTimeout(()=>{ sec.classList.remove('shake'); },500);
+    alert("Yanlış cevap, tekrar dene 😅");
+  }
+}
+
+// Benimle çıkarmısın? kontrol
+function checkAnswer(correct){
+  if(correct){
+    for(let i=0;i<20;i++){
+      const span=document.createElement('span');
+      span.className='emoji';
+      span.innerText=['❤️','💐','🌸','🌹','✨'][Math.floor(Math.random()*5)];
+      span.style.left=Math.random()*90+'%';
+      span.style.top=Math.random()*80+'%';
+      span.style.fontSize=(20+Math.random()*35)+'px';
+      document.body.appendChild(span);
+      setTimeout(()=>{ span.remove(); },2500);
+    }
+    document.getElementById('loveMsg').style.display='block';
+    document.getElementById('sec4').scrollIntoView({behavior:'smooth'});
+  }else{
+    const sec=document.getElementById('sec3');
+    sec.classList.add('shake');
+    setTimeout(()=>{ sec.classList.remove('shake'); },500);
+    alert("BU CEVAP KABUL EDİLMEDİ 😅");
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+</script>
+
+</body>
+</html>
